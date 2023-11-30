@@ -2,7 +2,7 @@ import {
   useState,
 } from "react";
 import {
-  Switch,
+  Routes,
   Route,
 } from "react-router-dom";
 import {
@@ -69,31 +69,31 @@ const AppLayout = props => {
         style={{visibility: frameVisible ? "visible" : "hidden"}}>
         {anim => (
           <div style={{padding: "20px"}}>
-          <Switch>
-            <Route exact path="/">
+          <Routes>
+            <Route exact path="/" element={
               <Launch 
                 entered={anim.entered}
                 planets={planets}
                 submitLaunch={submitLaunch}
-                isPendingLaunch={isPendingLaunch} />
+                isPendingLaunch={isPendingLaunch} />}>
             </Route>
-            <Route exact path="/launch">
+            <Route exact path="/launch" element={
               <Launch
                 entered={anim.entered}
                 planets={planets}
                 submitLaunch={submitLaunch}
-                isPendingLaunch={isPendingLaunch} />
+                isPendingLaunch={isPendingLaunch} />}>
             </Route>
-            <Route exact path="/upcoming">
+            <Route exact path="/upcoming" element={
               <Upcoming
                 entered={anim.entered}
                 launches={launches}
-                abortLaunch={abortLaunch} />
+                abortLaunch={abortLaunch} />}>
             </Route>
-            <Route exact path="/history">
-              <History entered={anim.entered} launches={launches} />
+            <Route exact path="/history" element={
+              <History entered={anim.entered} launches={launches} />}>
             </Route>
-          </Switch>
+          </Routes>
           </div>
         )}
       </Frame>

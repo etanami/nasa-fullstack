@@ -11,7 +11,7 @@ function httpPostLaunch(req, res) {
   if (
     !launch.mission ||
     !launch.launchDate ||
-    !launch.destination ||
+    !launch.target ||
     !launch.rocket
   ) {
     return res.status(400).json({

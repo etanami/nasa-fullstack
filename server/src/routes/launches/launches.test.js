@@ -3,6 +3,7 @@ const request = require("supertest");
 const app = require("../../app");
 
 describe("GET /launch", () => {
+  // Test to check for GET request success
   test("It should return with 200 success", async () => {
     const response = await request(app)
       .get("/launch")
@@ -25,6 +26,14 @@ describe("POST /launch", () => {
     target: "Kepler-442 e",
   };
 
+  const userDataInvalidDate = {
+    mission: "BIG-E Space Entry",
+    rocket: "Space Shuttle 1",
+    launchDate: "Oops",
+    target: "Kepler-442 e",
+  };
+
+  // Test to check for POST request success
   test("It should return with 201 success", async () => {
     const response = await request(app)
       .post("/launch")
@@ -39,6 +48,29 @@ describe("POST /launch", () => {
     expect(response.body).toMatchObject(userDataWithoutDate);
   });
 
-  test("It should catch missing properties", () => {});
-  test("It should catch invalid date", () => {});
+  // Test to catch missing properties
+  test("It should catch missing properties", async () => {
+    const response = await request(app)
+      .post("/launch")
+      .send(userDataWithoutDate)
+      .expect("Content-Type", /json/)
+      .expect(400);
+
+    expect(response.body).toStrictEqual({
+      error: "Missing required launch property!",
+    });
+  });
+
+  // Test to catch invalid date
+  test("It should catch invalid date", async () => {
+    const response = await request(app)
+      .post("/launch")
+      .send(userDataInvalidDate)
+      .expect("Content-Type", /json/)
+      .expect(400);
+
+    expect(response.body).toStrictEqual({
+      error: "Invalid launch date!",
+    });
+  });
 });

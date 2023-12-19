@@ -1,9 +1,7 @@
 const launches = require("./launches.mongo");
 const planets = require("./planets.mongo");
 
-//const launches = new Map();
-
-let flightNumber = 100;
+const DEFAULT_FLIGHT_NUMBER = 100;
 
 const launch = {
   flightNumber: 100,
@@ -18,10 +16,18 @@ const launch = {
 
 saveLaunch(launch);
 
-//launches.set(launch.flightNumber, launch);
-
 function existsLaunch(launchId) {
   return launches.has(launchId);
+}
+
+async function getLatestFlightNumber() {
+  const latestLaunch = await launches.findOne().sort("-flightNumber");
+
+  if (!latestLaunch) {
+    return DEFAULT_FLIGHT_NUMBER;
+  }
+
+  return latestLaunch.flightNumber;
 }
 
 async function getAllLaunches() {
@@ -30,10 +36,10 @@ async function getAllLaunches() {
 
 async function saveLaunch(launch) {
   const planet = await planets.findOne({
-    keplerName: launch.target
+    keplerName: launch.target,
   });
 
-  if(!planet) {
+  if (!planet) {
     throw new Error("Planet doesn't exist");
   }
 
@@ -48,17 +54,17 @@ async function saveLaunch(launch) {
   );
 }
 
-function addNewLaunch(launch) {
-  flightNumber++;
-  launches.set(
-    flightNumber,
-    Object.assign(launch, {
-      flightNumber,
-      customer: ["Zero To Mastery", "NASA"],
-      upcoming: true,
-      success: true,
-    })
-  );
+async function scheduleNewLaunch(launch) {
+  const newFlightNumber = await getLatestFlightNumber() + 1;
+  
+  const newLaunch = Object.assign(launch, {
+    flightNumber: newFlightNumber,
+    customers: ["Zero To Mastery", "NASA"],
+    upcoming: true,
+    success: true,
+  });
+
+  await saveLaunch(newLaunch);
 }
 
 function abortLaunchById(launchId) {
@@ -71,6 +77,6 @@ function abortLaunchById(launchId) {
 module.exports = {
   existsLaunch,
   getAllLaunches,
-  addNewLaunch,
+  scheduleNewLaunch,
   abortLaunchById,
 };

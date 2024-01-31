@@ -13,6 +13,9 @@ const launchesSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  target: {
+    type: String,
+  },
   mission: {
     type: String,
     required: true,

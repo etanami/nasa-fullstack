@@ -44,8 +44,8 @@ async function populateLaunches() {
   });
 
   if (response.status !== 200) {
-    console.log('Problem downloading launch data');
-    throw new Error('Launch data download failed');
+    console.log("Problem downloading launch data");
+    throw new Error("Launch data download failed");
   }
 
   const launchDocs = response.data.docs;
@@ -105,8 +105,12 @@ async function getLatestFlightNumber() {
   return latestLaunch.flightNumber;
 }
 
-async function getAllLaunches() {
-  return await launchesDB.find({}, { _id: 0, __v: 0 });
+async function getAllLaunches(skip, limit) {
+  return await launchesDB
+    .find({}, { _id: 0, __v: 0 })
+    .sort({ flightNumber: 1 })
+    .skip(skip)
+    .limit(limit);
 }
 
 async function saveLaunch(launch) {
